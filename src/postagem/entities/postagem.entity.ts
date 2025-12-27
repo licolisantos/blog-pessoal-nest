@@ -1,5 +1,8 @@
 import { IsNotEmpty } from "class-validator";
 import { Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
+import { ManyToOne } from "typeorm";
+import { Tema } from "../../tema/entities/tema.entity";
+
 
 @Entity({name:'tb_postagens'})  // Indicando que a classe é uma Entidade/Model - Converte em uma tabela no banco de dados
 export class Postagem {
@@ -17,5 +20,9 @@ export class Postagem {
 
     @UpdateDateColumn()
     data: Date;
+
+    // Muitas postagens pertencem a um tema
+    @ManyToOne(() => Tema, (tema) => tema.postagem)
+    tema: Tema;
 
 }
