@@ -1,28 +1,44 @@
-import { IsNotEmpty } from "class-validator";
-import { Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
-import { ManyToOne } from "typeorm";
-import { Tema } from "../../tema/entities/tema.entity";
+// Importa os decorators do TypeORM para mapeamento da entidade
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 
+// Importa a entidade Tema para o relacionamento
+import { Tema } from '../../tema/entities/tema.entity';
 
-@Entity({name:'tb_postagens'})  // Indicando que a classe é uma Entidade/Model - Converte em uma tabela no banco de dados
+// Importa a entidade Usuario via barrel file
+import { Usuario } from '../../usuario/entities';
+
+// Define a tabela tb_postagens no banco de dados
+@Entity({ name: 'tb_postagens' })
 export class Postagem {
 
-    @PrimaryGeneratedColumn() // Chave Primária e Autto Incremental
-    id: number;
+  // Chave primária gerada automaticamente
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @IsNotEmpty()   // Validados de Objeto
-    @Column({length: 100, nullable: false}) //length é o tamanho máximo // É o NOTT NULL do MySQL
-    titulo: string;
+  // Título da postagem (até 100 caracteres)
+  @Column({ length: 100 })
+  titulo: string;
 
-    @IsNotEmpty()   // Validados de Objeto
-    @Column({length: 100, nullable: false}) //length é o tamanho máximo // É o NOTT NULL do MySQL
-    texto: string;
+  // Texto da postagem (até 1000 caracteres)
+  @Column({ length: 1000 })
+  texto: string;
 
-    @UpdateDateColumn()
-    data: Date;
+  // Data de criação da postagem
+  // Valor padrão é o timestamp atual do banco
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  data: Date;
 
-    // Muitas postagens pertencem a um tema
-    @ManyToOne(() => Tema, (tema) => tema.postagem)
-    tema: Tema;
+  // Relacionamento muitos-para-um com Tema
+  // Várias postagens podem pertencer a um mesmo tema
+  @ManyToOne(() => Tema, (tema) => tema.postagem, {
+    onDelete: 'CASCADE',
+  })
+  tema: Tema;
 
+  // Relacionamento muitos-para-um com Usuario
+  // Várias postagens podem ser criadas por um mesmo usuário
+  @ManyToOne(() => Usuario, (usuario) => usuario.postagens, {
+  onDelete: 'CASCADE'
+})
+usuario: Usuario;
 }

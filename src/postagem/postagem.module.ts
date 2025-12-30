@@ -1,37 +1,40 @@
-// Importo o decorator Module, que transforma esta classe
-// em um módulo do NestJS
-import { Module } from "@nestjs/common";
+// Importa o decorator Module do NestJS
+import { Module } from '@nestjs/common';
 
-// Importo o TypeOrmModule para permitir a integração
-// deste módulo com o banco de dados via TypeORM
-import { TypeOrmModule } from "@nestjs/typeorm";
+// Importa o módulo do TypeORM
+import { TypeOrmModule } from '@nestjs/typeorm';
 
-// Importo a entidade Postagem, que representa a tabela tb_postagens
-import { Postagem } from "./entities/postagem.entity";
+// Importa a entidade Postagem
+import { Postagem } from './entities/postagem.entity';
 
-// Importo o service responsável pela lógica de negócio
-// relacionada às postagens
-import { PostagemService } from "./services/postagem.service";
+// Importa o controller de Postagem
+import { PostagemController } from './controller/postagem.controller';
 
-// Importo o controller responsável por expor os endpoints
-// da API para o recurso Postagem
-import { PostagemController } from "./controller/postagem.controller";
+// Importa o service de Postagem
+import { PostagemService } from './services/postagem.service';
 
-// O decorator @Module define que esta classe é um módulo do NestJS
+// Importa os módulos relacionados
+import { TemaModule } from '../tema/tema.module';
+import { UsuarioModule } from '../usuario/usuario.module';
+
 @Module({
-  // No array imports, utilizo o TypeOrmModule.forFeature
-  // para registrar a entidade Postagem neste módulo
-  // Isso permite o uso do repositório da entidade Postagem
-  imports: [TypeOrmModule.forFeature([Postagem])],
+  // Registra a entidade Postagem
+  imports: [
+    TypeOrmModule.forFeature([Postagem]),
 
-  // Registro do controller responsável pelas rotas de Postagem
-  controllers: [PostagemController],
+    // Importa os módulos que possuem entidades relacionadas
+    TemaModule,
+    UsuarioModule,
+  ],
 
-  // Registro do service que contém as regras de negócio de Postagem
-  providers: [PostagemService],
+  // Registra o controller
+  controllers: [
+    PostagemController,
+  ],
 
-  // Exporto o TypeOrmModule para
-  // permitir que outros módulos possam usar o repositório de Postagem
-  exports: [TypeOrmModule],
+  // Registra o service
+  providers: [
+    PostagemService,
+  ],
 })
 export class PostagemModule {}

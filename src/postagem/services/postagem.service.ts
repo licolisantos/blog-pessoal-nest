@@ -1,66 +1,71 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+// Importa o decorator Injectable do NestJS
+import { Injectable } from "@nestjs/common";
+
+// Importa o decorator para injeção do repositório
 import { InjectRepository } from "@nestjs/typeorm";
-import { ILike, Repository } from "typeorm";
+
+// Importa classes do TypeORM
+import { Repository, ILike } from "typeorm";
+
+// Importa a entidade Postagem
 import { Postagem } from "../entities/postagem.entity";
 
 @Injectable()
 export class PostagemService {
 
-    // Aqui o Nest injeta o repositório do TypeORM
+    // Injeta o repositório da entidade Postagem
     constructor(
         @InjectRepository(Postagem)
         private postagemRepository: Repository<Postagem>
     ) {}
 
-    //  Buscar TODAS as postagens
-    async findAll(): Promise<Postagem[]> {
-        return await this.postagemRepository.find();
-    }
-
-    //  Buscar postagem pelo ID
-    async findById(id: number): Promise<Postagem> {
-
-        const postagem = await this.postagemRepository.findOne({
-            where: { id }
-        });
-
-        // Se não encontrar, lança erro
-        if (!postagem) {
-            throw new NotFoundException("Postagem não encontrada!");
-        }
-
-        return postagem;
-    }
-
-    //  Buscar postagem pelo título (parecido com)
-    async findByTitulo(titulo: string): Promise<Postagem[]> {
-        return await this.postagemRepository.find({
-            where: {
-                titulo: ILike(`%${titulo}%`)
+    // Retorna todas as postagens com Tema e Usuario
+    findAll(): Promise<Postagem[]> {
+        return this.postagemRepository.find({
+            relations: {
+                tema: true,
+                usuario: true
             }
         });
     }
 
-    // Criar nova postagem
-    async create(postagem: Postagem): Promise<Postagem> {
-        return await this.postagemRepository.save(postagem);
+    // Retorna uma postagem pelo id
+    // Pode retornar null caso não exista
+    findById(id: number): Promise<Postagem | null> {
+        return this.postagemRepository.findOne({
+            where: { id },
+            relations: {
+                tema: true,
+                usuario: true
+            }
+        });
     }
 
-    //  Atualizar postagem
-    async update(postagem: Postagem): Promise<Postagem> {
-
-        // Primeiro verifica se existe
-        await this.findById(postagem.id);
-
-        return await this.postagemRepository.save(postagem);
+    // Retorna todas as postagens cujo título contenha o texto informado
+    findByTitulo(titulo: string): Promise<Postagem[]> {
+        return this.postagemRepository.find({
+            where: {
+                titulo: ILike(`%${titulo}%`)
+            },
+            relations: {
+                tema: true,
+                usuario: true
+            }
+        });
     }
 
-    //  Deletar postagem
+    // Cria uma nova postagem
+    create(postagem: Postagem): Promise<Postagem> {
+        return this.postagemRepository.save(postagem);
+    }
+
+    // Atualiza uma postagem existente
+    update(postagem: Postagem): Promise<Postagem> {
+        return this.postagemRepository.save(postagem);
+    }
+
+    // Remove uma postagem pelo id
     async delete(id: number): Promise<void> {
-
-        // Verifica se existe antes de apagar
-        await this.findById(id);
-
         await this.postagemRepository.delete(id);
     }
 }
