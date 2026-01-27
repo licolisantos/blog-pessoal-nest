@@ -23,8 +23,7 @@ export class Postagem {
   texto: string;
 
   // Data de criação da postagem
-  // Valor padrão é o timestamp atual do banco
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   data: Date;
 
   // Relacionamento muitos-para-um com Tema

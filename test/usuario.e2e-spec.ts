@@ -1,11 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppModule } from '../src/app.module';
+import { Usuario } from '../src/usuario/entities/usuario.entity';
+import { Postagem } from '../src/postagem/entities/postagem.entity';
+import { Tema } from '../src/tema/entities/tema.entity';
+import { UsuarioModule } from '../src/usuario/usuario.module';
+import { AuthModule } from '../src/auth/auth.module';
 
 describe('Recurso Usuário - Testes E2E', () => {
   let app: INestApplication;
+  let token: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -14,14 +19,16 @@ describe('Recurso Usuário - Testes E2E', () => {
           type: 'sqlite',
           database: ':memory:',
           dropSchema: true,
-          entities: ['dist/**/*.entity.js'],
+          entities: [Usuario, Postagem, Tema],
           synchronize: true,
         }),
-        AppModule,
+        UsuarioModule,
+        AuthModule,
       ],
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.useGlobalPipes(new ValidationPipe());
     await app.init();
   });
 
@@ -45,6 +52,7 @@ describe('Recurso Usuário - Testes E2E', () => {
         senha: '12345678',
       });
     expect(response.status).toBe(201);
+    token = (response.body as { token: string }).token;
   });
 
   it('03 - Não Deve Cadastrar Usuário Duplicado', async () => {
@@ -60,32 +68,14 @@ describe('Recurso Usuário - Testes E2E', () => {
   });
 
   it('04 - Deve Listar todos os Usuários', async () => {
-    // Primeiro faz login para obter token
-    const loginResponse = await request(app.getHttpServer())
-      .post('/usuarios/logar')
-      .send({
-        usuario: 'licoli@email.com',
-        senha: '12345678',
-      });
-
-    const token = (loginResponse.body as { token: string }).token;
-
     const response = await request(app.getHttpServer())
       .get('/usuarios/all')
       .set('Authorization', `Bearer ${token}`);
     expect(response.status).toBe(200);
+    expect(response.body).toHaveLength(1);
   });
 
   it('05 - Deve Atualizar um Usuário', async () => {
-    const loginResponse = await request(app.getHttpServer())
-      .post('/usuarios/logar')
-      .send({
-        usuario: 'licoli@email.com',
-        senha: '12345678',
-      });
-
-    const token = (loginResponse.body as { token: string }).token;
-
     const response = await request(app.getHttpServer())
       .put('/usuarios/atualizar')
       .set('Authorization', `Bearer ${token}`)
@@ -97,6 +87,7 @@ describe('Recurso Usuário - Testes E2E', () => {
         foto: 'foto-atualizada.png',
       });
     expect(response.status).toBe(200);
+    expect((response.body as { nome: string }).nome).toBe('Licoli Santos Atualizado');
   });
 
   afterAll(async () => {
