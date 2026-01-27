@@ -10,7 +10,6 @@ import { Usuario } from '../../usuario/entities';
 // Define a tabela tb_postagens no banco de dados
 @Entity({ name: 'tb_postagens' })
 export class Postagem {
-
   // Chave primária gerada automaticamente
   @PrimaryGeneratedColumn()
   id: number;
@@ -38,7 +37,7 @@ export class Postagem {
   // Relacionamento muitos-para-um com Usuario
   // Várias postagens podem ser criadas por um mesmo usuário
   @ManyToOne(() => Usuario, (usuario) => usuario.postagens, {
-  onDelete: 'CASCADE'
-})
-usuario: Usuario;
+    onDelete: 'CASCADE',
+  })
+  usuario: Usuario;
 }

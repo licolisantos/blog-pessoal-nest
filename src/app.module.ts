@@ -12,10 +12,9 @@ import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
-
     // Configuração do banco de dados
     TypeOrmModule.forRoot({
-      type: 'mysql',               // OBRIGATÓRIO → era isso que estava undefined
+      type: 'mysql', // OBRIGATÓRIO → era isso que estava undefined
       host: 'localhost',
       port: 3306,
       username: 'root',

@@ -28,13 +28,9 @@ import { UsuarioModule } from '../usuario/usuario.module';
   ],
 
   // Registra o controller
-  controllers: [
-    PostagemController,
-  ],
+  controllers: [PostagemController],
 
   // Registra o service
-  providers: [
-    PostagemService,
-  ],
+  providers: [PostagemService],
 })
 export class PostagemModule {}

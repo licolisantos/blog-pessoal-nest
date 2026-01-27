@@ -1,11 +1,9 @@
-// Classe auxiliar usada apenas para login
-// Esta classe NÃO gera tabela no banco de dados
+import { ApiProperty } from '@nestjs/swagger';
 
 export class UsuarioLogin {
-
-  // Nome de usuário usado no login
+  @ApiProperty()
   usuario: string;
 
-  // Senha informada no login
+  @ApiProperty()
   senha: string;
 }

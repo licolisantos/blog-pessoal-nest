@@ -35,20 +35,11 @@ import { jwtConstants } from './constants';
     }),
   ],
 
-  controllers: [
-    AuthController,
-  ],
+  controllers: [AuthController],
 
-  providers: [
-    AuthService,
-    LocalStrategy,
-    JwtStrategy,
-    BcryptService,
-  ],
+  providers: [AuthService, LocalStrategy, JwtStrategy, BcryptService],
 
   // Exporta o BcryptService para o UsuarioModule
-  exports: [
-    BcryptService,
-  ],
+  exports: [BcryptService],
 })
 export class AuthModule {}

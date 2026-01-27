@@ -10,9 +10,14 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 // Importa constantes CORRETAS
 import { jwtConstants } from './constants';
 
+// Interface para tipar o payload do JWT
+interface JwtPayload {
+  sub: number;
+  usuario: string;
+}
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -21,7 +26,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: any) {
+  validate(payload: JwtPayload) {
     return {
       id: payload.sub,
       usuario: payload.usuario,

@@ -1,23 +1,23 @@
-// Importa decorators do NestJS
 import { Controller, Post, Req, UseGuards } from '@nestjs/common';
-
-// Importa o AuthService
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-
-// Importa o LocalAuthGuard
 import { LocalAuthGuard } from './local-auth.guard';
+import { Usuario } from '../usuario/entities/usuario.entity';
+import { UsuarioLogin } from './entities/usuario-login.entity';
 
-@Controller('/auth')
+interface RequestWithUser extends Request {
+  user: Usuario;
+}
+
+@ApiTags('Auth')
+@Controller('/usuarios')
 export class AuthController {
-
   constructor(private authService: AuthService) {}
 
-  // Endpoint de login
   @UseGuards(LocalAuthGuard)
-  @Post('/login')
-  async login(@Req() req) {
-
-    // req.user vem da LocalStrategy
+  @Post('/logar')
+  @ApiBody({ type: UsuarioLogin })
+  login(@Req() req: RequestWithUser) {
     return this.authService.login(req.user);
   }
 }

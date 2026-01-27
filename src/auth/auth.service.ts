@@ -15,19 +15,14 @@ import { Usuario } from '../usuario/entities/usuario.entity';
 
 @Injectable()
 export class AuthService {
-
   constructor(
     private usuarioService: UsuarioService,
     private jwtService: JwtService,
-    private bcryptService: BcryptService
+    private bcryptService: BcryptService,
   ) {}
 
   // Valida usuário e senha no login
-  async validarUsuario(
-    usuario: string,
-    senha: string
-  ): Promise<Usuario> {
-
+  async validarUsuario(usuario: string, senha: string): Promise<Usuario> {
     // Busca usuário no banco
     const usuarioBanco = await this.usuarioService.findByUsuario(usuario);
 
@@ -39,7 +34,7 @@ export class AuthService {
     // Compara senha digitada com a senha criptografada
     const senhaValida = await this.bcryptService.compararSenha(
       senha,
-      usuarioBanco.senha
+      usuarioBanco.senha,
     );
 
     // Se a senha estiver incorreta
@@ -52,8 +47,7 @@ export class AuthService {
   }
 
   // Gera o token JWT
-  async login(usuario: Usuario) {
-
+  login(usuario: Usuario) {
     // Payload que vai dentro do token
     const payload = {
       sub: usuario.id,

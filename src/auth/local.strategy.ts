@@ -15,9 +15,7 @@ import { Usuario } from '../usuario/entities/usuario.entity';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-
   constructor(private authService: AuthService) {
-
     // AQUI ESTÁ A CORREÇÃO CRÍTICA
     // Dizemos explicitamente quais campos virão do body
     super({
@@ -28,8 +26,10 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 
   // Método chamado automaticamente pelo Passport
   async validate(usuario: string, senha: string): Promise<Usuario> {
-
-    const usuarioValidado = await this.authService.validarUsuario(usuario, senha);
+    const usuarioValidado = await this.authService.validarUsuario(
+      usuario,
+      senha,
+    );
 
     if (!usuarioValidado) {
       throw new UnauthorizedException();

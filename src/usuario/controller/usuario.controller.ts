@@ -1,78 +1,61 @@
-// Importa os decorators necessários do NestJS
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Post,
   Put,
   UseGuards,
 } from '@nestjs/common';
-
-// Importa a entidade Usuario
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Usuario } from '../entities/usuario.entity';
-
-// Importa o service responsável pelas regras de negócio
 import { UsuarioService } from '../services/usuario.service';
-
-// Importa o Guard de autenticação JWT
-// Ele verifica se o token enviado no header é válido
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 
-// Define o controller do recurso Usuario
-// Todas as rotas começam com /usuarios
+@ApiTags('Usuario')
 @Controller('/usuarios')
 export class UsuarioController {
+  constructor(private readonly usuarioService: UsuarioService) {}
 
-  // Injeta o UsuarioService
-  constructor(
-    private readonly usuarioService: UsuarioService
-  ) {}
-
-  // ================================
-  // 🔒 ROTAS PROTEGIDAS (COM JWT)
-  // ================================
-
-  // Lista todos os usuários
-  // Só funciona se o token JWT for enviado no header
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @Get()
+  @Get('/all')
+  @HttpCode(HttpStatus.OK)
   findAll(): Promise<Usuario[]> {
     return this.usuarioService.findAll();
   }
 
-  // Busca um usuário pelo ID
-  // Também exige autenticação JWT
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('/:id')
-  findById(
-    @Param('id', ParseIntPipe) id: number
-  ): Promise<Usuario | null> {
+  @HttpCode(HttpStatus.OK)
+  findById(@Param('id', ParseIntPipe) id: number): Promise<Usuario> {
     return this.usuarioService.findById(id);
   }
 
-  // Atualiza um usuário
-  // Exige JWT porque altera dados sensíveis
+  @Post('/cadastrar')
+  @HttpCode(HttpStatus.CREATED)
+  create(@Body() usuario: Usuario): Promise<Usuario> {
+    return this.usuarioService.create(usuario);
+  }
+
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @Put()
-  update(
-    @Body() usuario: Usuario
-  ): Promise<Usuario> {
+  @Put('/atualizar')
+  @HttpCode(HttpStatus.OK)
+  update(@Body() usuario: Usuario): Promise<Usuario> {
     return this.usuarioService.update(usuario);
   }
 
-  // ================================
-  // 🔓 ROTA PÚBLICA (SEM JWT)
-  // ================================
-
-  // Cria um novo usuário
-  // NÃO usa JwtAuthGuard
-  // Motivo: qualquer pessoa precisa conseguir se cadastrar
-  @Post()
-  create(
-    @Body() usuario: Usuario
-  ): Promise<Usuario> {
-    return this.usuarioService.create(usuario);
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Delete('/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.usuarioService.delete(id);
   }
 }

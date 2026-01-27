@@ -22,17 +22,10 @@ import { AuthModule } from '../auth/auth.module';
     forwardRef(() => AuthModule),
   ],
 
-  controllers: [
-    UsuarioController,
-  ],
+  controllers: [UsuarioController],
 
-  providers: [
-    UsuarioService,
-  ],
+  providers: [UsuarioService],
 
-  exports: [
-    UsuarioService,
-    TypeOrmModule,
-  ],
+  exports: [UsuarioService, TypeOrmModule],
 })
 export class UsuarioModule {}

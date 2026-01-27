@@ -1,21 +1,21 @@
 // Importo o decorator Module, que transforma esta classe
 // em um módulo do NestJS
-import { Module } from "@nestjs/common";
+import { Module } from '@nestjs/common';
 
 // Importo o TypeOrmModule para permitir a integração
 // deste módulo com o banco de dados via TypeORM
-import { TypeOrmModule } from "@nestjs/typeorm";
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 // Importo a entidade Tema, que representa a tabela tb_temas
-import { Tema } from "./entities/tema.entity";
+import { Tema } from './entities/tema.entity';
 
 // Importo o service responsável pela lógica de negócio
 // relacionada aos temas
-import { TemaService } from "./services/tema.service";
+import { TemaService } from './services/tema.service';
 
 // Importo o controller responsável por expor os endpoints
 // da API para o recurso Tema
-import { TemaController } from "./controller/tema.controller";
+import { TemaController } from './controller/tema.controller';
 
 // O decorator @Module define que esta classe é um módulo do NestJS
 @Module({

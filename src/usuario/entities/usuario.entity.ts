@@ -1,17 +1,11 @@
 // Importa decorators do TypeORM
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  OneToMany,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 // Importa Postagem
 import { Postagem } from '../../postagem/entities/postagem.entity';
 
 @Entity({ name: 'tb_usuarios' })
 export class Usuario {
-
   @PrimaryGeneratedColumn()
   id: number;
 
