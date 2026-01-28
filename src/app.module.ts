@@ -1,34 +1,26 @@
-// Importa o decorator Module
 import { Module } from '@nestjs/common';
-
-// Importa o TypeORM
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
-// Importa os módulos da aplicação
+import { AppController } from './app.controller';
+import { AuthModule } from './auth/auth.module';
 import { PostagemModule } from './postagem/postagem.module';
 import { TemaModule } from './tema/tema.module';
 import { UsuarioModule } from './usuario/usuario.module';
-import { AuthModule } from './auth/auth.module';
+import { ProdService } from './data/services/prod.service';
 
 @Module({
   imports: [
-    // Configuração do banco de dados
-    TypeOrmModule.forRoot({
-      type: 'mysql', // OBRIGATÓRIO → era isso que estava undefined
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'root',
-      database: 'db_blogpessoal',
-      autoLoadEntities: true,
-      synchronize: true,
+    ConfigModule.forRoot(),
+    TypeOrmModule.forRootAsync({
+      useClass: ProdService,
+      imports: [ConfigModule],
     }),
-
-    // Importação dos módulos
     PostagemModule,
     TemaModule,
-    UsuarioModule,
     AuthModule,
+    UsuarioModule
   ],
+  controllers: [AppController],
+  providers: [],
 })
 export class AppModule {}
