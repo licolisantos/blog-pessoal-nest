@@ -87,7 +87,9 @@ describe('Recurso Usuário - Testes E2E', () => {
         foto: 'foto-atualizada.png',
       });
     expect(response.status).toBe(200);
-    expect((response.body as { nome: string }).nome).toBe('Licoli Santos Atualizado');
+    expect((response.body as { nome: string }).nome).toBe(
+      'Licoli Santos Atualizado',
+    );
   });
 
   afterAll(async () => {

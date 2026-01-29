@@ -18,7 +18,7 @@ import { ProdService } from './data/services/prod.service';
     PostagemModule,
     TemaModule,
     AuthModule,
-    UsuarioModule
+    UsuarioModule,
   ],
   controllers: [AppController],
   providers: [],
