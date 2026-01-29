@@ -23,7 +23,7 @@ export class Postagem {
   texto: string;
 
   // Data de criação da postagem
-  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   data: Date;
 
   // Relacionamento muitos-para-um com Tema
