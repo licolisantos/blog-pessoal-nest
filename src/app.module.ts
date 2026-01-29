@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
+import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { PostagemModule } from './postagem/postagem.module';
 import { TemaModule } from './tema/tema.module';
@@ -21,6 +22,6 @@ import { ProdService } from './data/services/prod.service';
     UsuarioModule,
   ],
   controllers: [AppController],
-  providers: [],
+  providers: [AppService],
 })
 export class AppModule {}
